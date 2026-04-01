@@ -8,6 +8,30 @@ const emailUtils = {
 		return parts.length === 2 ? parts[1] : '';
 	},
 
+	normalizeDomainList(domainList) {
+		if (!domainList) return [];
+		if (typeof domainList === 'string') {
+			try {
+				domainList = JSON.parse(domainList);
+			} catch (e) {
+				domainList = [domainList];
+			}
+		}
+		if (!Array.isArray(domainList)) {
+			domainList = [domainList];
+		}
+		return domainList
+			.map((item) => String(item || '').trim().toLowerCase().replace(/^@/, ''))
+			.filter(Boolean);
+	},
+
+	isAllowedDomain(domain, domainList) {
+		const target = String(domain || '').trim().toLowerCase().replace(/^@/, '');
+		if (!target) return false;
+		const normalized = this.normalizeDomainList(domainList);
+		return normalized.some((base) => target === base || target.endsWith(`.${base}`));
+	},
+
 	getName(email) {
 		if (typeof email !== 'string') return '';
 		const parts = email.trim().split('@');

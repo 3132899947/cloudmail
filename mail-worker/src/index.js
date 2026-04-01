@@ -6,12 +6,17 @@ import emailService from './service/email-service';
 import kvObjService from './service/kv-obj-service';
 import oauthService from "./service/oauth-service";
 export default {
-	 async fetch(req, env, ctx) {
+	async fetch(req, env, ctx) {
 
 		const url = new URL(req.url)
 
-		if (url.pathname.startsWith('/api/')) {
-			url.pathname = url.pathname.replace('/api', '')
+		if (url.pathname.startsWith('/api/') || url.pathname === '/api') {
+			url.pathname = url.pathname.replace('/api', '') || '/'
+			req = new Request(url.toString(), req)
+			return app.fetch(req, env, ctx);
+		}
+
+		if (url.pathname.startsWith('/admin/') || url.pathname === '/admin') {
 			req = new Request(url.toString(), req)
 			return app.fetch(req, env, ctx);
 		}

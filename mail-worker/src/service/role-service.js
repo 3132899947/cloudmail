@@ -162,12 +162,8 @@ const roleService = {
 			return true
 		}
 
-		const availIndex = availDomain.findIndex(item => {
-			const domain = emailUtils.getDomain(email.toLowerCase());
-			const availDomainItem = item.toLowerCase();
-			console.log(domain,availDomainItem)
-			return domain === availDomainItem
-		})
+		const domain = emailUtils.getDomain(email.toLowerCase());
+		const availIndex = availDomain.findIndex(item => emailUtils.isAllowedDomain(domain, [item]));
 
 		return availIndex > -1
 	},
